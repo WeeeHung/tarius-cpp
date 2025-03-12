@@ -1,0 +1,100 @@
+# Build directories
+build/
+out/
+cmake-build-*/
+bin/
+lib/
+Debug/
+Release/
+x64/
+x86/
+
+# Generated data files
+data/conversations/
+data/summaries/
+data/calendar/
+data/tasks/
+data/config.json
+
+# Log files
+logs/
+*.log
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+tarius_ai
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# IDE specific files
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+ipch/
+*.VC.db
+*.VC.opendb
+
+# Visual Studio Code
+.vscode/
+.history/
+
+# JetBrains IDEs (CLion, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+cmake-build-*/
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Dependency directories
+external/*
+!external/spdlog/
+!external/nlohmann_json/
+vcpkg_installed/
+
+# Backup files
+*~
+*.bak
+*.swp
+*.tmp
+
+# Core dumps
+core 
