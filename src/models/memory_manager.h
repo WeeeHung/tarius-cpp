@@ -57,7 +57,7 @@ namespace tarius::models
 
         // Summarization
         void summarizeConversation(const std::string &conversationId);
-        void summarizeOldConversations(int daysOld = 1);
+        void summarizeOldConversations(int minutesOld = 1);
         std::vector<Summary> getSummaries(const std::string &dateFrom, const std::string &dateTo);
 
     private:

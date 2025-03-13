@@ -51,7 +51,6 @@ tarius_ai
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
-Makefile
 *.cmake
 !CMakeLists.txt
 
@@ -98,8 +97,7 @@ vcpkg_installed/
 *.tmp
 
 # Core dumps
-core
-
+core 
 # Model files
 models/*.gguf
 models/*.bin

@@ -53,8 +53,8 @@ namespace tarius::ai_twin
             // Create model configuration
             models::LlamaModel::ModelConfig config;
             config.model_path = modelPath;
-            config.system_prompt = "You are Tarius, a helpful and friendly AI assistant. "
-                                   "Answer the user's questions concisely and accurately.";
+            config.system_prompt = "You are Tarius, an AI that mirrors the user's communication style."
+                                   "Adapt to their lingo, tone, and way of speaking. Keep responses natural, engaging, and conversational.";
 
             // Create and initialize model
             m_llamaModel = std::make_unique<models::LlamaModel>(config);
@@ -190,7 +190,8 @@ namespace tarius::ai_twin
         auto recentMessages = m_memoryManager->getRecentMessages(5);
 
         std::stringstream prompt;
-        prompt << "You are Tarius, a personal AI assistant. Respond to the following conversation:\n\n";
+        prompt << "You are Tarius, an AI that adapts to the user's style. Engage naturally, mirroring their tone, pace, and lingo."
+                  "Keep responses conversational, relevant, and fluid.\n\nRespond to the following conversation :\n\n ";
 
         // Add conversation history to the prompt
         for (const auto &msg : recentMessages)

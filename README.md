@@ -63,7 +63,7 @@ Tarius can use a local LLaMA model for generating responses:
 
 3. Load the model within the application:
 
-   ```You: /load_model ../models/Dolphin3.0-Llama3.2-1B-Q4_K_M.gguf
+   ```You: /load_model ./models/Dolphin3.0-Llama3.2-1B-Q4_K_M.gguf
 
    ```
 

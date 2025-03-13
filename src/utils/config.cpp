@@ -190,7 +190,7 @@ namespace tarius::utils
     void Config::setDefaults()
     {
         // Set default configuration values
-        setString("user.name", "User");
+        setString("user.name", "Wee Hung");
         setString("ai.name", "Tarius");
         setBool("ai.proactive_reminders", true);
         setInt("memory.max_recent_messages", 10);
