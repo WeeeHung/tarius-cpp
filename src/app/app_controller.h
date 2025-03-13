@@ -17,6 +17,10 @@ namespace tarius::app
         std::string processUserInput(const std::string &input);
         void checkReminders();
 
+        // LlamaModel integration
+        bool initializeLlamaModel(const std::string &modelPath);
+        bool isLlamaModelInitialized() const;
+
     private:
         std::unique_ptr<ai_twin::AITwin> m_aiTwin;
         std::unique_ptr<ai_secretary::AISecretary> m_aiSecretary;

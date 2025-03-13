@@ -10,7 +10,9 @@ namespace tarius::ai_twin
 {
 
     AITwin::AITwin()
-        : m_memoryManager(std::make_unique<models::MemoryManager>())
+        : m_memoryManager(std::make_unique<models::MemoryManager>()),
+          m_llamaModel(nullptr),
+          m_useLlamaModel(false)
     {
     }
 
@@ -22,12 +24,66 @@ namespace tarius::ai_twin
         m_memoryManager->addMessage("user", userInput);
 
         // Generate a response
-        std::string response = generateSimpleResponse(userInput);
+        std::string response;
+
+        if (m_useLlamaModel && m_llamaModel && m_llamaModel->isInitialized())
+        {
+            LOG_INFO("Generating response using LlamaModel");
+            std::string prompt = createPrompt(userInput);
+            response = m_llamaModel->generate(prompt);
+        }
+        else
+        {
+            LOG_INFO("Generating simple response");
+            response = generateSimpleResponse(userInput);
+        }
 
         // Log the AI response
         m_memoryManager->addMessage("ai", response);
 
         return response;
+    }
+
+    bool AITwin::initializeLlamaModel(const std::string &modelPath)
+    {
+        LOG_INFO("Initializing LlamaModel with model path: {}", modelPath);
+
+        try
+        {
+            // Create model configuration
+            models::LlamaModel::ModelConfig config;
+            config.model_path = modelPath;
+            config.system_prompt = "You are Tarius, a helpful and friendly AI assistant. "
+                                   "Answer the user's questions concisely and accurately.";
+
+            // Create and initialize model
+            m_llamaModel = std::make_unique<models::LlamaModel>(config);
+            bool success = m_llamaModel->initialize();
+
+            if (success)
+            {
+                m_useLlamaModel = true;
+                LOG_INFO("LlamaModel initialized successfully");
+            }
+            else
+            {
+                LOG_ERROR("Failed to initialize LlamaModel");
+                m_llamaModel.reset();
+            }
+
+            return success;
+        }
+        catch (const std::exception &e)
+        {
+            LOG_ERROR("Exception during LlamaModel initialization: {}", e.what());
+            m_llamaModel.reset();
+            return false;
+        }
+    }
+
+    bool AITwin::isLlamaModelInitialized() const
+    {
+        return m_useLlamaModel && m_llamaModel && m_llamaModel->isInitialized();
     }
 
     std::string AITwin::generateSimpleResponse(const std::string &userInput)
@@ -130,9 +186,6 @@ namespace tarius::ai_twin
 
     std::string AITwin::createPrompt(const std::string &userInput)
     {
-        // This method would be used in a full implementation to create a prompt for an LLM
-        // For MVP, we're using simple pattern matching instead
-
         // Get recent conversation history
         auto recentMessages = m_memoryManager->getRecentMessages(5);
 
@@ -145,8 +198,12 @@ namespace tarius::ai_twin
             prompt << (msg.speaker == "user" ? "User: " : "Tarius: ") << msg.content << "\n";
         }
 
-        // Add the current user input
-        prompt << "User: " << userInput << "\n";
+        // Add the current user input if not already in history
+        if (recentMessages.empty() || recentMessages.back().speaker != "user" || recentMessages.back().content != userInput)
+        {
+            prompt << "User: " << userInput << "\n";
+        }
+
         prompt << "Tarius: ";
 
         return prompt.str();

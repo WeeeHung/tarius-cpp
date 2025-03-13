@@ -36,4 +36,15 @@ namespace tarius::app
         }
     }
 
+    bool AppController::initializeLlamaModel(const std::string &modelPath)
+    {
+        LOG_INFO("Initializing LlamaModel from AppController with model path: {}", modelPath);
+        return m_aiTwin->initializeLlamaModel(modelPath);
+    }
+
+    bool AppController::isLlamaModelInitialized() const
+    {
+        return m_aiTwin->isLlamaModelInitialized();
+    }
+
 } // namespace tarius::app

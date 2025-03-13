@@ -88,6 +88,7 @@ cmake-build-*/
 external/*
 !external/spdlog/
 !external/nlohmann_json/
+!external/llama.cpp/
 vcpkg_installed/
 
 # Backup files
@@ -97,4 +98,23 @@ vcpkg_installed/
 *.tmp
 
 # Core dumps
-core 
+core
+
+# Model files
+models/*.gguf
+models/*.bin
+models/*.ggml
+models/*.pt
+models/*.pth
+models/*.safetensors
+models/checkpoints/
+
+# Keep model directory but ignore contents
+models/
+!models/.gitkeep
+
+# Submodule build artifacts
+external/llama.cpp/build/
+external/llama.cpp/models/
+external/*/build/
+external/*/*.o 

@@ -4,6 +4,8 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <sstream>
+#include <filesystem>
 
 namespace tarius::app
 {
@@ -46,7 +48,11 @@ namespace tarius::app
             }
             else
             {
-                processCommand(input);
+                // Process special commands first, then regular input
+                if (!processSpecialCommand(input))
+                {
+                    processCommand(input);
+                }
             }
         }
 
@@ -55,6 +61,69 @@ namespace tarius::app
         {
             reminderThread.join();
         }
+    }
+
+    bool CLIInterface::processSpecialCommand(const std::string &input)
+    {
+        // Check for special commands that start with a slash
+        if (input.empty() || input[0] != '/')
+        {
+            return false;
+        }
+
+        std::string command = input.substr(1); // Remove the slash
+        std::istringstream iss(command);
+        std::string cmd;
+        iss >> cmd;
+
+        if (cmd == "load_model")
+        {
+            std::string modelPath;
+            iss >> modelPath;
+
+            if (modelPath.empty())
+            {
+                std::cout << "Tarius: Please specify a path to the model file." << std::endl;
+                std::cout << "Usage: /load_model [path_to_model]" << std::endl;
+                return true;
+            }
+
+            // Check if the model file exists
+            if (!std::filesystem::exists(modelPath))
+            {
+                std::cout << "Tarius: Model file not found at " << modelPath << std::endl;
+                return true;
+            }
+
+            std::cout << "Tarius: Loading model from " << modelPath << ". This may take a moment..." << std::endl;
+            bool success = m_controller->initializeLlamaModel(modelPath);
+
+            if (success)
+            {
+                std::cout << "Tarius: Model loaded successfully! I'm now using the LLaMA model to generate responses." << std::endl;
+            }
+            else
+            {
+                std::cout << "Tarius: Failed to load the model. Please check the logs for details." << std::endl;
+            }
+
+            return true;
+        }
+        else if (cmd == "model_status")
+        {
+            bool isInitialized = m_controller->isLlamaModelInitialized();
+            if (isInitialized)
+            {
+                std::cout << "Tarius: LLaMA model is initialized and active." << std::endl;
+            }
+            else
+            {
+                std::cout << "Tarius: LLaMA model is not currently active." << std::endl;
+            }
+            return true;
+        }
+
+        return false;
     }
 
     void CLIInterface::displayWelcome()
@@ -78,6 +147,8 @@ namespace tarius::app
         std::cout << "Available commands:" << std::endl;
         std::cout << "  help - Display this help message" << std::endl;
         std::cout << "  exit/quit - Exit the application" << std::endl;
+        std::cout << "  /load_model [path_to_model] - Load a LLaMA model from the specified path" << std::endl;
+        std::cout << "  /model_status - Check if the LLaMA model is active" << std::endl;
         std::cout << std::endl;
         std::cout << "You can also:" << std::endl;
         std::cout << "  - Chat naturally with your AI twin" << std::endl;

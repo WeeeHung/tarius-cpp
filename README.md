@@ -1,71 +1,97 @@
-# Tarius AI
+# Tarius AI - Personal AI Assistant
 
-Tarius AI is a personal AI twin and secretary that runs locally on your device. It provides a conversational interface for managing tasks, scheduling events, and more, while ensuring your data remains private.
+Tarius is a locally-run AI assistant that combines scheduling, reminders, and conversational abilities.
 
 ## Features
 
-- **Local Conversation Store**: All conversations are stored locally on your device.
-- **Basic Personality Emulation**: The AI responds in a personalized manner.
-- **Compression via Summarization**: Older conversations are summarized to save space.
-- **AI Secretary Functions**: Schedule events, set reminders, and manage tasks.
+- 💬 Chat naturally with your AI twin
+- 📅 Schedule events and appointments
+- ⏰ Set reminders and manage tasks
+- 📝 Conversation memory and retrieval
+- 🔒 100% private - all data stays local on your device
+- 🤖 Optional local LLM integration (no internet required)
 
 ## Building from Source
 
 ### Prerequisites
 
+- CMake (3.10 or higher)
 - C++17 compatible compiler
-- CMake 3.10 or higher
-- nlohmann_json library
-- spdlog library
+- Git
 
 ### Build Instructions
 
-1. Clone the repository:
+1. Clone the repository with submodules:
 
    ```
-   git clone https://github.com/yourusername/tarius_ai_cpp.git
-   cd tarius_ai_cpp
+   git clone --recursive https://github.com/yourusername/tarius-cpp.git
+   cd tarius-cpp
    ```
 
-2. Create a build directory:
+2. If you cloned without `--recursive`, initialize and update submodules:
+
+   ```
+   git submodule update --init --recursive
+   ```
+
+3. Create a build directory and configure:
 
    ```
    mkdir build
    cd build
-   ```
-
-3. Configure and build:
-
-   ```
    cmake ..
-   make
    ```
 
-4. Run the application:
+4. Build the project:
    ```
-   ./tarius_ai
+   cmake --build . --config Release
    ```
 
-## Usage
+## Using with a Local LLM
 
-Once the application is running, you can interact with Tarius AI through the command-line interface:
+Tarius can use a local LLaMA model for generating responses:
 
-- Chat naturally with the AI
-- Schedule events (e.g., "Schedule a meeting with Bob tomorrow at 3pm")
-- Set reminders (e.g., "Remind me to call mom this evening")
-- Ask for help by typing "help"
-- Exit the application by typing "exit" or "quit"
+1. Download a compatible GGUF model (recommended size: 1-7B parameters)
 
-## Data Storage
+   - Example: `curl -L -o models/Dolphin3.0-Llama3.2-1B-Q4_K_M.gguf https://huggingface.co/bartowski/Dolphin3.0-Llama3.2-1B-GGUF/resolve/main/Dolphin3.0-Llama3.2-1B-Q4_K_M.gguf`
 
-All data is stored locally in the following directories:
+2. Run Tarius:
 
-- `data/conversations/`: Stored conversations
-- `data/summaries/`: Conversation summaries
-- `data/calendar/`: Calendar events
-- `data/tasks/`: Task list
-- `logs/`: Application logs
+   ```
+   ./build/tarius_ai
+   ```
+
+3. Load the model within the application:
+
+   ```
+   You: /load_model ../models/Dolphin3.0-Llama3.2-1B-Q4_K_M.gguf
+   ```
+
+4. Check model status:
+   ```
+   You: /model_status
+   ```
+
+## Available Commands
+
+- `help` - Display help message
+- `exit` or `quit` - Exit the application
+- `/load_model [path]` - Load a GGUF model file
+- `/model_status` - Check if the LLaMA model is active
+
+## Example Usage
+
+```
+You: Schedule a meeting with Bob tomorrow at 3pm
+Tarius: I've scheduled "meeting with Bob" for April 23, 2024 at 3:00 PM. I'll remind you when it's time.
+
+You: Remind me to call mom this evening
+Tarius: I'll remind you to "call mom" on April 22, 2024 at 7:00 PM.
+
+You: Tell me a joke
+Tarius: Why don't scientists trust atoms? Because they make up everything!
+```
 
 ## License
 
-[MIT License](LICENSE)
+MIT License - See LICENSE file for details.
