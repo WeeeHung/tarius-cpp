@@ -122,6 +122,21 @@ namespace tarius::app
             }
             return true;
         }
+        else if (cmd == "load_default")
+        {
+            bool success = m_controller->initializeLlamaModel("./models/Dolphin3.0-Llama3.2-1B-Q4_K_M.gguf");
+
+            if (success)
+            {
+                std::cout << "Tarius: Model loaded successfully! I'm now using the LLaMA model to generate responses." << std::endl;
+            }
+            else
+            {
+                std::cout << "Tarius: Failed to load the model. Please check the logs for details." << std::endl;
+            }
+
+            return true;
+        }
 
         return false;
     }
