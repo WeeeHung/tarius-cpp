@@ -108,7 +108,7 @@ models/*.safetensors
 models/checkpoints/
 
 # Keep model directory but ignore contents
-models/
+# models/
 !models/.gitkeep
 
 # Submodule build artifacts

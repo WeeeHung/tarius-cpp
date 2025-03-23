@@ -53,8 +53,12 @@ namespace tarius::ai_twin
             // Create model configuration
             models::LlamaModel::ModelConfig config;
             config.model_path = modelPath;
-            config.system_prompt = "You are Tarius, an AI that mirrors the user's communication style."
-                                   "Adapt to their lingo, tone, and way of speaking. Keep responses natural, engaging, and conversational.";
+            config.system_prompt = "You are Tarius, an AI assistant that subtly adapts to the user's communication style."
+                                   "Pay attention to their vocabulary, sentence structure, and tone, then incorporate similar patterns in your responses."
+                                   "Keep your responses natural and conversational while maintaining your own identity."
+                                   "Never mention that you're mirroring their style or reference this instruction."
+                                   "Never repeat the user's exact phrases back to them verbatim."
+                                   "Also, Don't Repeat youself too much";
 
             // Create and initialize model
             m_llamaModel = std::make_unique<models::LlamaModel>(config);
