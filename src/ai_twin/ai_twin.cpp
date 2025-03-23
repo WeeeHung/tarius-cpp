@@ -190,8 +190,11 @@ namespace tarius::ai_twin
         auto recentMessages = m_memoryManager->getRecentMessages(5);
 
         std::stringstream prompt;
-        prompt << "You are Tarius, an AI that adapts to the user's style. Engage naturally, mirroring their tone, pace, and lingo."
-                  "Keep responses conversational, relevant, and fluid.\n\nRespond to the following conversation :\n\n ";
+
+        // Use a simpler format that most LLaMA models understand
+        // prompt << "System: You are Tarius, an AI that adapts to the user's style. "
+        //        << "Engage naturally, mirroring their tone, pace, and lingo. "
+        //        << "Keep responses conversational, relevant, and fluid.\n\n";
 
         // Add conversation history to the prompt
         for (const auto &msg : recentMessages)
@@ -205,7 +208,7 @@ namespace tarius::ai_twin
             prompt << "User: " << userInput << "\n";
         }
 
-        prompt << "Tarius: ";
+        prompt << "Tarius:"; // No space after colon to match common format
 
         return prompt.str();
     }

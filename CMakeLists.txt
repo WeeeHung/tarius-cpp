@@ -4,6 +4,10 @@ project(TariusAI VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Build configuration options
+option(TARIUS_DISABLE_DEBUG_LOGS "Disable debug and info logs" OFF)
+option(TARIUS_DISABLE_LLAMA_LOGS "Disable llama.cpp logs" OFF)
+
 # Enable OpenMP if available (useful for llama.cpp)
 find_package(OpenMP QUIET)
 if(OpenMP_CXX_FOUND)
@@ -49,14 +53,25 @@ set(SOURCES
     src/utils/json_handler.cpp
 )
 
-# If using local LLM, add this:
-# src/models/llama_model.cpp
-
-# Create executable
+# Create regular executable with logs
 add_executable(tarius_ai ${SOURCES})
+
+# Create release executable with minimal logs
+add_executable(tarius_ai_release ${SOURCES})
+target_compile_definitions(tarius_ai_release PRIVATE 
+    TARIUS_DISABLE_DEBUG_LOGS
+    TARIUS_DISABLE_LLAMA_LOGS
+)
 
 # Include directories
 target_include_directories(tarius_ai PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    # If using submodule
+    ${CMAKE_CURRENT_SOURCE_DIR}/external
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/llama.cpp
+    # Add any other include directories here
+)
+target_include_directories(tarius_ai_release PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     # If using submodule
     ${CMAKE_CURRENT_SOURCE_DIR}/external
@@ -71,14 +86,29 @@ target_link_libraries(tarius_ai PRIVATE
     # llama_cpp (if using local LLM)
     llama
 )
+target_link_libraries(tarius_ai_release PRIVATE
+    nlohmann_json::nlohmann_json
+    spdlog::spdlog
+    # llama_cpp (if using local LLM)
+    llama
+)
 
 # Add C++17 filesystem library if needed (for std::filesystem)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
     target_link_libraries(tarius_ai PRIVATE stdc++fs)
+    target_link_libraries(tarius_ai_release PRIVATE stdc++fs)
 endif()
 
 # Create data directories during build
 add_custom_command(TARGET tarius_ai POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/data/conversations
+    ${CMAKE_CURRENT_SOURCE_DIR}/data/summaries
+    ${CMAKE_CURRENT_SOURCE_DIR}/data/calendar
+    ${CMAKE_CURRENT_SOURCE_DIR}/data/tasks
+    ${CMAKE_CURRENT_SOURCE_DIR}/models
+)
+add_custom_command(TARGET tarius_ai_release POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/data/conversations
     ${CMAKE_CURRENT_SOURCE_DIR}/data/summaries
